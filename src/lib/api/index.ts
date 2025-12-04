@@ -15,7 +15,7 @@ export async function getAlbum(slug: string) {
   const data = await client.album(slug).get();
   if (data.success) {
     const album = data.data.photoGalleryCollection.items[0];
-    const photos = album.photosCollection.items;
+    const photos = album.photosCollection?.items ?? [];
     return { album, photos };
   }
   throw new Error(`Failed to fetch album ${slug}`);
@@ -46,7 +46,7 @@ export async function getFolder(folder: string) {
   const data = await client.folder(folder).get();
   if (data.success) {
     const folder = data.data.photoFoldersCollection.items[0];
-    const photos = folder.photosCollection.items;
+    const photos = folder.photosCollection?.items ?? [];
     return { folder, photos };
   }
   throw new Error(`Failed to fetch folder '${folder}'`);
