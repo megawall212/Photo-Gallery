@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 type Tag = string;
 
-export function useTags(
+export function generateTags(
   album: Pick<Album, 'date' | 'description' | 'locations'>
 ) {
   let tags = [];

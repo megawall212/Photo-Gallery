@@ -4,10 +4,6 @@ import Nav from '@/lib/nav';
 import Noise from '@/lib/fx/noise';
 import { ExternalLink } from '@/lib/external-link';
 import { FaDiscord } from 'react-icons/fa';
-import {Instagram, Github, Linkedin, Link,Settings,Camera, MessageCircle } from 'lucide-react'; // for icon usage
-
-
-
 
 
 
