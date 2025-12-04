@@ -43,7 +43,7 @@ query {
     const response = await this.request(z.string(), AlbumResponseSchema, {
       method: 'POST',
       body: JSON.stringify({ query }),
-      next: { tags: ['albums'], revalidate: 0 }
+      next: { tags: ['albums'], revalidate: 1 }
     });
     return response;
   }
@@ -159,7 +159,7 @@ query {
     const response = await this.request(z.string(), FolderResponseSchema, {
       method: 'POST',
       body: JSON.stringify({ query }),
-      next: { tags: ['folders'], revalidate: 0 }
+      next: { tags: ['folders'], revalidate: 1 }
     });
     return response;
   }
