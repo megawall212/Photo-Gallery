@@ -1,75 +1,41 @@
 import dynamic from 'next/dynamic';
-import { getAlbum, getAlbums } from '@/lib/api';
+import { getAlbums, getPhotos } from '@/lib/api';
 import Nav from '@/lib/nav';
-import { titleToSlug, slugToAlbumTitle } from '@/lib/api/slug';
-import { LocationIcon } from '@/lib/icons/location-icon';
-import { TagChip, generateTags } from './chip';
-
-
-export const fetchCache = "force-no-store";
-export const revalidate = 0;
-
 
 const Masonry = dynamic(() => import('@/lib/images/masonry'), {
   ssr: false
 });
 
 export async function generateStaticParams() {
-  return [];
+  const start = 2015;
+  const end = new Date().getFullYear();
+  return Array.from({ length: end - start + 1 }, (_, i) => ({
+    slug: (start + i).toString()
+  }));
 }
 
-
-async function AlbumPage({ params: { slug } }: { params: { slug: string } }) {
-  const albums = await getAlbums();
-  const title = slugToAlbumTitle(slug);
-  const { album, photos } = await getAlbum(title);
-  const tags = generateTags(album);
+async function Tag({ params: { slug } }: { params: { slug: string } }) {
+  const [albums, photos] = await Promise.all([getAlbums(), getPhotos(slug)]);
 
   return (
-    <section className="flex flex-col sm:flex-row sm:my-20" id="top">
+    <section className="flex flex-col sm:flex-row sm:my-20">
       <div className="pt-10 sm:pl-10 sm:pr-20 lg:pl-20 lg:pr-40 space-y-1">
-        <Nav albums={albums} title={title} />
+        <Nav albums={albums} />
       </div>
 
-      <div className="flex flex-col items-start mt-6">
+      <div className="flex-col max-sm:px-2">
         <div
-          className={`rounded-lg bg-gray-100
-            mx-auto sm:m-0
-            px-5 py-4
-            min-w-[calc(100%-16px)] max-w-[600px] sm:min-w-[400px]`}
+          className={`mt-12 inline-block px-2 py-1
+          border-dashed border border-gray-200 rounded-md
+          bg-gray-100 text-gray-500`}
         >
-          <div role="img" className="pointer-events-none text-gray-400">
-            <LocationIcon />
-          </div>
-          <div className="flex items-end justify-between gap-24">
-            <h1 className="font-normal text-2xl text-gray-600 mt-4 min-w-32">
-              {title}
-            </h1>
-            <div
-              className={`flex items-end justify-end flex-wrap-reverse gap-2
-                text-gray-500 text-sm`}
-            >
-              {tags.map(tag => (
-                <TagChip key={tag} tag={tag} />
-              ))}
-            </div>
-          </div>
+          {slug}
         </div>
 
-        <Masonry className="my-12" items={photos} />
-
-        <a
-          href="#top"
-          className={`pt-6 max-sm:px-2 max-sm:pb-6
-            max-sm:text-center max-sm:w-full
-            text-gray-400 hover:text-gray-600
-            fade-in-delayed`}
-        >
-          Go to top ↑
-        </a>
+        <Masonry className="my-6" items={photos} />
       </div>
     </section>
   );
 }
 
-export default AlbumPage;
+export default Tag;

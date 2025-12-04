@@ -3,13 +3,12 @@ import { slugToFolderName, titleToSlug } from '@/lib/api/slug';
 import Grid from '@/lib/images/pig-grid';
 import Link from 'next/link';
 
-export const dynamic = "force-dynamic";
-export const fetchCache = "force-no-store";
-export const revalidate = 0;
 
 export async function generateStaticParams() {
-  return [];
+  const folders = await getFolders(); // fetch all folders from your API/CMS
+  return folders.map(folder => ({ slug: titleToSlug(folder.title) }));
 }
+
 
 async function Folder({ params: { slug } }: { params: { slug: string } }) {
   const name = slugToFolderName(slug);

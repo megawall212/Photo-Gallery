@@ -5,13 +5,9 @@ import Noise from '@/lib/fx/noise';
 import { ExternalLink } from '@/lib/external-link';
 import { FaDiscord } from 'react-icons/fa';
 
-export const dynamic = "force-dynamic";
-export const fetchCache = "force-no-store";
-export const revalidate = 0;
 
-export async function generateStaticParams() {
-  return [];
-}
+
+
 
 function Contact() {
   return (

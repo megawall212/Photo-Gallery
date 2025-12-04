@@ -432,7 +432,7 @@ function Globe({ albums }: { albums: Array<Album> }) {
 
       <section className="content-container grow text-3xl">
         <h1 className="font-bold mb-12 sm:mb-20 text-center md:text-left">
-          Johnson...
+          
         </h1>
 
         <ul

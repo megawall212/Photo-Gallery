@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "export": "next build",
     "lint": "next lint",
     "format": "prettier",
     "format:fix": "prettier --fix",
@@ -14,7 +15,7 @@
     "check": "tsc --noEmit",
     "check:all": "pnpm check && pnpm knip && pnpm lint && pnpm format",
     "test": "npx playwright test",
-    "predeploy": "pnpm run build", 
+    "predeploy": "pnpm run build",
     "deploy": "gh-pages -d out"
   },
   "dependencies": {
@@ -23,9 +24,10 @@
     "classnames": "^2.5.1",
     "cobe": "^0.6.3",
     "d3-geo": "^3.1.1",
+    "dotenv": "^17.2.3",
     "justifiedGallery": "^3.8.1",
     "masonic": "^4.0.0",
-    "next": "14.2.33",
+    "next": "^14.2.33",
     "photoswipe": "^5.4.3",
     "prettier": "^3.2.5",
     "react": "^18.3.1",
@@ -48,11 +50,11 @@
     }
   },
   "devDependencies": {
-    "@types/node": "^20",
+    "@types/node": "^20.19.25",
     "@types/react": "^18.3.1",
     "@types/react-dom": "^18.3.1",
     "eslint": "^8",
-    "eslint-config-next": "14.2.3",
+    "eslint-config-next": "^16.0.7",
     "gh-pages": "^6.3.0",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",

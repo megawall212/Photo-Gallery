@@ -2,9 +2,6 @@ import { getFolders } from '@/lib/api';
 import { titleToSlug } from '@/lib/api/slug';
 import Link from 'next/link';
 
-export const dynamic = "force-dynamic";
-export const fetchCache = "force-no-store";
-export const revalidate = 0;
 
 type Folder = { title: string; date: string };
 
