@@ -41,8 +41,7 @@ type Arc = {
 const ALBUM_ROUTES: Record<string, string> = {
   'China': '/china',
   'Japan': '/japan',
-  'Texas': '/texas',
-  // Add more albums here as you create them
+  'Texas': '/texas'
 };
 
 function randomInRange(min: number, max: number): number {
@@ -423,6 +422,9 @@ function Globe({ albums }: { albums: Array<Album> }) {
           className={`flex flex-col items-center
             md:items-start tracking-tight`}
         >
+          <li className="max-w-fit">
+            <Link href="/about">About</Link>
+          </li>
           {albums.map(album => {
             const albumRoute = ALBUM_ROUTES[album.title];
             
