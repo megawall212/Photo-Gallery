@@ -7,17 +7,17 @@ import {
   FolderPhotosResponseSchema,
   FolderResponseSchema
 } from '@/types/api';
+
 export class Client extends BaseClient {
-  albums = new AlbumsClient(this.baseUrl);
-  album(slug: string) {
-    return new AlbumClient(this.baseUrl, slug);
-  }
-
-  photos = new PhotosClient(this.baseUrl);
-
-  folders = new FoldersClient(this.baseUrl);
-  folder(slug: string) {
-    return new FolderClient(this.baseUrl, slug);
+  albums: AlbumsClient;
+  photos: PhotosClient;
+  folders: FoldersClient;
+  
+  constructor() {
+    super(); 
+    this.albums = new AlbumsClient(this.baseUrl);
+    this.photos = new PhotosClient(this.baseUrl);
+    this.folders = new FoldersClient(this.baseUrl);
   }
 }
 
@@ -36,6 +36,14 @@ query {
       lng
       locations
       order
+      photosCollection {
+        items {
+          size
+          url
+          width
+          height
+        }
+      }
     }
   }
 }`;
@@ -47,19 +55,8 @@ query {
     });
     return response;
   }
-}
 
-export class AlbumClient extends BaseClient {
-  constructor(
-    protected baseUrl: string,
-    private slug: string
-  ) {
-    super(baseUrl);
-    this.slug = slug;
-  }
-
-  async get() {
-    const title = this.slug;
+  async getByTitle(title: string) {
     const query = `
 query {
   photoGalleryCollection(where: { title: "${title}" }) {
@@ -100,6 +97,27 @@ query {
 }
 
 export class PhotosClient extends BaseClient {
+  async get() {
+    const query = `
+query {
+  assetCollection {
+    items {
+      size
+      url
+      width
+      height
+    }
+  }
+}`;
+
+    const response = await this.request(z.string(), AssetsResponseSchema, {
+      method: 'POST',
+      body: JSON.stringify({ query }),
+      next: { tags: ['photos'] }
+    });
+    return response;
+  }
+
   async findBy(tag: string) {
     const query = `
 query($tag: String!) {
@@ -125,6 +143,7 @@ query($tag: String!) {
       body: JSON.stringify({ query, variables: { tag } }),
       next: { tags: ['photos'] }
     });
+    
     // If the tag is a year, we might accidentally match 4-digit numbers in the filename that aren't the year.
     // For example, `IMG_20240211_020123.jpg` is dated in `2024`, but it would show up in our Contentful query for `2012`.
     // Contentful's GraphQL API does not support filtering by regular expressions.
@@ -152,6 +171,14 @@ query {
       description
       date
       order
+      photosCollection {
+        items {
+          size
+          url
+          width
+          height
+        }
+      }
     }
   }
 }`;
@@ -163,19 +190,8 @@ query {
     });
     return response;
   }
-}
 
-export class FolderClient extends BaseClient {
-  constructor(
-    protected baseUrl: string,
-    private slug: string
-  ) {
-    super(baseUrl);
-    this.slug = slug;
-  }
-
-  async get() {
-    const title = this.slug;
+  async getByTitle(title: string) {
     const query = `
 query {
   photoFoldersCollection(where: { title_contains: "${title}" }) {

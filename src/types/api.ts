@@ -60,11 +60,25 @@ export const AssetsResponseSchema = z.object({
 });
 
 export const FolderResponseSchema = z.object({
-  data: z.object({
-    photoFoldersCollection: z.object({
-      items: z.array(FolderSchema)
+  photoFoldersCollection: z
+    .object({
+      items: z.array(
+        z.object({
+          title: z.string(),
+          parentTitle: z.string().nullable(),
+          description: z.string().nullable(),
+          date: z.string().nullable(),
+          order: z.number(),
+          photosCollection: z
+            .object({ items: z.array(z.any()) })
+            .optional(),
+          contentfulMetadata: z
+            .object({ tags: z.array(z.any()) })
+            .optional(),
+        })
+      ),
     })
-  })
+    .optional(),
 });
 
 export const FolderPhotosResponseSchema = z.object({

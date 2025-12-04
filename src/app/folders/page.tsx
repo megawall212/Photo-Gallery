@@ -1,10 +1,5 @@
 import { getFolders } from '@/lib/api';
-import { titleToSlug } from '@/lib/api/slug';
 import Link from 'next/link';
-
-export const dynamic = "force-dynamic";
-export const fetchCache = "force-no-store";
-export const revalidate = 0;
 
 type Folder = { title: string; date: string };
 
@@ -33,14 +28,11 @@ export default async function Folders() {
               key={folder.title}
               className="border border-gray-300 bg-gray-50 rounded-lg hover:bg-white hover:border-gray-200"
             >
-              <Link
-                href={`/folders/${titleToSlug(folder.title)}`}
-                className="flex items-center w-full px-4 py-3 text-xl text-gray-800 hover:text-black"
-              >
+              <div className="flex items-center w-full px-4 py-3 text-xl text-gray-800">
                 <span className="font-medium tracking-widest">{folder.title}</span>
                 <span className="text-gray-300 mx-5">/</span>
                 <span className="text-gray-400 tracking-tight">{folder.date}</span>
-              </Link>
+              </div>
             </li>
           ))}
         </ul>

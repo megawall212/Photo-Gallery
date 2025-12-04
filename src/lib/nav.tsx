@@ -2,7 +2,13 @@ import Link from 'next/link';
 import { AlbumList, AlbumTitle } from '../types/albums';
 import React from 'react';
 import { GlobeIcon, InfoIcon, SocialIcon } from './icons';
-import { titleToSlug } from './api/slug';
+
+// Map album titles to their static route paths
+const ALBUM_ROUTES: Record<string, string> = {
+  'China': '/china',
+  'Japan': '/japan',
+  'Texas': '/texas',
+};
 
 export const Nav: React.FC<{
   title?: AlbumTitle;
@@ -22,10 +28,16 @@ export const Nav: React.FC<{
       <ul className="flex flex-col max-sm:items-center max-sm:mb-8 content-start tracking-tight">
         {albums.map(album => {
           const isActive = title.toLowerCase() === album.title.toLowerCase();
+          const albumRoute = ALBUM_ROUTES[album.title];
+          
+          if (!albumRoute) {
+            return null;
+          }
+          
           return (
             <li key={album.title} className="max-w-fit">
               <Link
-                href={`/${titleToSlug(album.title)}`}
+                href={albumRoute}
                 className={isActive ? 'font-bold' : 'hover:text-gray-500'}
                 prefetch={false}
               >
@@ -34,6 +46,7 @@ export const Nav: React.FC<{
             </li>
           );
         })}
+
         {title && (
           <>
             <li className="sm:mt-10 flex gap-1">

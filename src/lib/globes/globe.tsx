@@ -9,12 +9,11 @@ import { geoGraticule10 } from 'd3-geo';
 import * as topojson from 'topojson-client';
 import { useWindowSize } from '@/hooks/use-window-size';
 import { Album, AlbumTitle, types } from '@/types/albums';
-import { titleToSlug } from '@/lib/api/slug';
 import Link from 'next/link';
 import { AlbumCard } from './card';
 
-type Ref = CustomGlobeMethods | undefined; // Reference to globe instance
-type GlobeEl = React.MutableRefObject<Ref>; // React `ref` passed to globe element
+type Ref = CustomGlobeMethods | undefined;
+type GlobeEl = React.MutableRefObject<Ref>;
 
 interface CustomGlobeMethods extends GlobeMethods {
   controls(): ReturnType<GlobeMethods['controls']> & {
@@ -36,6 +35,14 @@ type Arc = {
   endLat: number;
   endLng: number;
   color: Array<string>;
+};
+
+// Map album titles to their static route paths
+const ALBUM_ROUTES: Record<string, string> = {
+  'China': '/china',
+  'Japan': '/japan',
+  'Texas': '/texas',
+  // Add more albums here as you create them
 };
 
 function randomInRange(min: number, max: number): number {
@@ -235,23 +242,18 @@ function useCustomLayer(globeEl: GlobeEl) {
 function useGlobeReady(globeEl: GlobeEl) {
   const [globeReady, setGlobeReady] = useState(false);
 
-  // faster autoRotate speed over the ocean
   const autoRotateSpeed = () => {
     if (globeEl.current) {
       const { lng } = globeEl.current.pointOfView();
       let newSpeed = DEFAULT_AUTOROTATE_SPEED;
 
-      // [ [ longitude, speed multiplier ], ... ]
       const gradientSteps = [
-        // sppeed down
         [175, 2],
         [165, 1.88],
         [160, 1.77],
         [155, 1.65],
         [150, 1.5],
         [145, 1.25],
-
-        // speed up
         [-160, 2.25],
         [-140, 2.0],
         [-120, 1.75],
@@ -263,12 +265,10 @@ function useGlobeReady(globeEl: GlobeEl) {
       ];
       for (const [longitude, multiplier] of gradientSteps) {
         if (longitude < 0 && lng < longitude) {
-          // west of california
           newSpeed = multiplier * DEFAULT_AUTOROTATE_SPEED;
           break;
         }
         if (longitude > 0 && lng > longitude) {
-          // east of japan
           newSpeed = multiplier * DEFAULT_AUTOROTATE_SPEED;
           break;
         }
@@ -286,17 +286,13 @@ function useGlobeReady(globeEl: GlobeEl) {
   useEffect(() => {
     if (globeReady && globeEl.current) {
       globeEl.current.controls().enabled = false;
-
       globeEl.current.controls().enableZoom = false;
-
       globeEl.current.controls().autoRotate = true;
       globeEl.current.controls().autoRotateSpeed = DEFAULT_AUTOROTATE_SPEED;
-
       globeEl.current.pointOfView({ lat: 30, lng: -30, altitude: 2 });
-
       autoRotateSpeed();
     }
-  }, [globeEl, globeReady]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [globeEl, globeReady]);
 
   return {
     handleGlobeReady: () => setGlobeReady(true)
@@ -326,7 +322,7 @@ function useScene(globeElRef: Ref) {
       32
     );
     const innerSphereMaterial = new THREE.MeshBasicMaterial({
-      color: 0xffffff /* it's neat to try different colors here */,
+      color: 0xffffff,
       opacity: 0.47,
       transparent: true
     });
@@ -342,22 +338,15 @@ function useScene(globeElRef: Ref) {
 const DEFAULT_AUTOROTATE_SPEED = 1.75;
 
 function Globe({ albums }: { albums: Array<Album> }) {
-  // object config
   const globeEl = useRef<Ref>();
   const globeElRef: Ref = globeEl.current;
 
   const { handleGlobeReady } = useGlobeReady(globeEl);
-
-  // scene config
   useScene(globeElRef);
 
-  // land shapes
   const { landPolygons, polygonMaterial } = useLandPolygons();
-
-  // `albums` map points
   const { points, pointAltitude, setPointAltitude } = usePoints(albums);
 
-  // rings animation
   const {
     rings,
     colorInterpolator,
@@ -367,13 +356,8 @@ function Globe({ albums }: { albums: Array<Album> }) {
   } = useRings(globeElRef as CustomGlobeMethods, setPointAltitude);
   const activeAlbum = albums.find(album => album.title === activeAlbumTitle);
 
-  // arcs animation
   const { arcs } = useArcs(albums);
-
-  // resize canvas on resize viewport
   const { width, height } = useWindowSize();
-
-  // stars in the background
   const { customLayerData, customThreeObject, customThreeObjectUpdate } =
     useCustomLayer(globeEl);
 
@@ -396,7 +380,7 @@ function Globe({ albums }: { albums: Array<Album> }) {
         ref={globeEl}
         width={width}
         height={height}
-        rendererConfig={{ antialias: true }} // `false` yields much better performance
+        rendererConfig={{ antialias: true }}
         onGlobeReady={handleGlobeReady}
         animateIn={false}
         backgroundColor="rgba(0,0,0,0)"
@@ -409,7 +393,7 @@ function Globe({ albums }: { albums: Array<Album> }) {
         polygonsTransitionDuration={0}
         polygonAltitude={() => 0}
         polygonSideColor={() => 'rgba(255, 255, 255, 0)'}
-        polygonStrokeColor={() => (isMac ? 'black' : 'darkslategray')} // compensate for platform's polygon rendering differences
+        polygonStrokeColor={() => (isMac ? 'black' : 'darkslategray')}
         pointsData={points}
         pointColor={() => 'rgba(255, 0, 0, 0.75)'}
         pointAltitude={pointAltitude}
@@ -422,7 +406,7 @@ function Globe({ albums }: { albums: Array<Album> }) {
         ringRepeatPeriod="repeatPeriod"
         arcsData={arcs}
         arcColor={'color'}
-        arcDashLength={() => randomInRange(0.06, 0.7) / 1} // the bigger the ranges, the calmer it looks
+        arcDashLength={() => randomInRange(0.06, 0.7) / 1}
         arcDashGap={() => randomInRange(0.025, 0.4) * 10}
         arcDashAnimateTime={() => randomInRange(0.08, 0.8) * 20000 + 500}
         customLayerData={customLayerData}
@@ -432,7 +416,7 @@ function Globe({ albums }: { albums: Array<Album> }) {
 
       <section className="content-container grow text-3xl">
         <h1 className="font-bold mb-12 sm:mb-20 text-center md:text-left">
-          Johnson...
+          
         </h1>
 
         <ul
@@ -440,6 +424,14 @@ function Globe({ albums }: { albums: Array<Album> }) {
             md:items-start tracking-tight`}
         >
           {albums.map(album => {
+            const albumRoute = ALBUM_ROUTES[album.title];
+            
+            // Skip albums without defined routes
+            if (!albumRoute) {
+              console.warn(`No route defined for album: ${album.title}`);
+              return null;
+            }
+
             return (
               <li
                 key={album.title}
@@ -452,8 +444,9 @@ function Globe({ albums }: { albums: Array<Album> }) {
                 }}
               >
                 <Link
-                  href={`/${titleToSlug(album.title)}`}
+                  href={albumRoute}
                   className="hover:text-gray-500"
+                  prefetch={false}
                 >
                   {album.title}
                 </Link>
