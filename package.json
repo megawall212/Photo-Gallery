@@ -13,7 +13,9 @@
     "knip:fix": "knip --fix",
     "check": "tsc --noEmit",
     "check:all": "pnpm check && pnpm knip && pnpm lint && pnpm format",
-    "test": "npx playwright test"
+    "test": "npx playwright test",
+    "predeploy": "pnpm run build && next export", 
+    "deploy": "gh-pages -d out"
   },
   "dependencies": {
     "@react-three/fiber": "^8.16.3",
@@ -51,6 +53,7 @@
     "@types/react-dom": "^18.3.1",
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
+    "gh-pages": "^6.3.0",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
