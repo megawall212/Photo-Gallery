@@ -15,6 +15,11 @@ export async function getAlbum(slug: string) {
   const data = await client.album(slug).get();
   if (data.success) {
     const album = data.data.photoGalleryCollection.items[0];
+
+    if (!album) { // ADDED: If no item found, throw an error immediately
+        throw new Error(`Album not found for slug ${slug}`);
+    }
+
     const photos = album.photosCollection?.items ?? [];
     return { album, photos };
   }
@@ -46,6 +51,11 @@ export async function getFolder(folder: string) {
   const data = await client.folder(folder).get();
   if (data.success) {
     const folder = data.data.photoFoldersCollection.items[0];
+
+    if (!folder) {  // ADDED: If no item found, throw an error immediately
+        throw new Error(`Folder not found for slug ${folder}`);
+    }
+
     const photos = folder.photosCollection?.items ?? [];
     return { folder, photos };
   }
