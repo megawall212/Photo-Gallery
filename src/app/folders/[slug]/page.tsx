@@ -3,14 +3,27 @@ import { slugToFolderName, titleToSlug } from '@/lib/api/slug';
 import Grid from '@/lib/images/pig-grid';
 import Link from 'next/link';
 
+export const dynamic = 'force-dynamic';
+
+
 export async function generateStaticParams() {
   const folders = await getFolders();
+  
   return folders.map(folder => ({ slug: titleToSlug(folder.title) }));
 }
 
 async function Folder({ params: { slug } }: { params: { slug: string } }) {
   const name = slugToFolderName(slug);
-  const { folder, photos } = await getFolder(name);
+  
+  const result = await getFolder(name); 
+  // ❌ Changed from:
+  // const { folder, photos } = await getFolder(name);
+
+  // ✅ Added safe defaults
+  if (!result?.folder) return <p>Folder not found</p>; // <--- new: prevents prerender crash
+
+  const folder = result.folder;
+  const photos = folder.photosCollection?.items ?? []; // <--- new: optional chaining + default empty array
 
   return (
     <section className="flex flex-col justify-center sm:flex-row sm:my-20 sm:mt-48">
@@ -22,7 +35,7 @@ async function Folder({ params: { slug } }: { params: { slug: string } }) {
           {folder.title}
         </h1>
 
-        <Grid items={photos} />
+        <Grid items={photos} /> {/* ✅ now guaranteed to be an array */}
 
         <div className="flex justify-between items-center text-gray-400 hover:text-gray-600">
           <a href="#top">↑ Go to top</a>
