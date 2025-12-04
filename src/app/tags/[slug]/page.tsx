@@ -6,12 +6,11 @@ const Masonry = dynamic(() => import('@/lib/images/masonry'), {
   ssr: false
 });
 
+export const fetchCache = "force-no-store";
+export const revalidate = 0;
+
 export async function generateStaticParams() {
-  const start = 2015;
-  const end = new Date().getFullYear();
-  return Array.from({ length: end - start + 1 }, (_, i) => ({
-    slug: (start + i).toString()
-  }));
+  return [];
 }
 
 async function Tag({ params: { slug } }: { params: { slug: string } }) {

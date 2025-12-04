@@ -5,14 +5,19 @@ import { titleToSlug, slugToAlbumTitle } from '@/lib/api/slug';
 import { LocationIcon } from '@/lib/icons/location-icon';
 import { TagChip, generateTags } from './chip';
 
+
+export const fetchCache = "force-no-store";
+export const revalidate = 0;
+
+
 const Masonry = dynamic(() => import('@/lib/images/masonry'), {
   ssr: false
 });
 
 export async function generateStaticParams() {
-  const albums = await getAlbums();
-  return albums.map(album => ({ slug: titleToSlug(album.title) }));
+  return [];
 }
+
 
 async function AlbumPage({ params: { slug } }: { params: { slug: string } }) {
   const albums = await getAlbums();

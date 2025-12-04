@@ -48,9 +48,16 @@ export abstract class BaseClient {
         }
       });
 
-      const data = await response.json();
+      const data = await response.json().catch(() => undefined);
 
-      responseSchema.parse(data);
+      const parsed = responseSchema.safeParse(data);
+      if (!parsed.success) {
+        console.error("Zod parse failed:", parsed.error);
+        return { success: false, message: "Invalid response schema", error: parsed.error };
+      }
+
+      return { ...parsed.data, success: true };
+
 
       return { ...data, success: true };
     } catch (error) {
