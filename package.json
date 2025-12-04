@@ -14,7 +14,7 @@
     "check": "tsc --noEmit",
     "check:all": "pnpm check && pnpm knip && pnpm lint && pnpm format",
     "test": "npx playwright test",
-    "predeploy": "pnpm run build && next export", 
+    "predeploy": "pnpm run build", 
     "deploy": "gh-pages -d out"
   },
   "dependencies": {
