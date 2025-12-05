@@ -1,3 +1,5 @@
+// src/lib/globes/globe.tsx
+
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
@@ -11,6 +13,8 @@ import { useWindowSize } from '@/hooks/use-window-size';
 import { Album, AlbumTitle, types } from '@/types/albums';
 import Link from 'next/link';
 import { AlbumCard } from './card';
+
+
 
 type Ref = CustomGlobeMethods | undefined;
 type GlobeEl = React.MutableRefObject<Ref>;
@@ -41,7 +45,8 @@ type Arc = {
 const ALBUM_ROUTES: Record<string, string> = {
   'China': '/china',
   'Japan': '/japan',
-  'Texas': '/texas'
+  'Texas': '/texas',
+  'Zander': '/zander'
 };
 
 function randomInRange(min: number, max: number): number {
@@ -415,16 +420,14 @@ function Globe({ albums }: { albums: Array<Album> }) {
 
       <section className="content-container grow text-3xl">
         <h1 className="font-bold mb-12 sm:mb-20 text-center md:text-left">
-          
+          Welcome to My Photography Gallery...
         </h1>
 
         <ul
           className={`flex flex-col items-center
             md:items-start tracking-tight`}
         >
-          <li className="max-w-fit">
-            <Link href="/about">About</Link>
-          </li>
+          
           {albums.map(album => {
             const albumRoute = ALBUM_ROUTES[album.title];
             

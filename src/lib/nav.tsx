@@ -1,3 +1,4 @@
+// src/lib/nav.tsx
 import Link from 'next/link';
 import { AlbumList, AlbumTitle } from '../types/albums';
 import React from 'react';
@@ -8,6 +9,7 @@ const ALBUM_ROUTES: Record<string, string> = {
   'China': '/china',
   'Japan': '/japan',
   'Texas': '/texas',
+  'Zander': '/zander'
 };
 
 export const Nav: React.FC<{
@@ -47,31 +49,28 @@ export const Nav: React.FC<{
           );
         })}
 
-        {title && (
-          <>
-            <li className="sm:mt-10 flex gap-1">
-              <Link
-                href="/about"
-                prefetch={false}
-                className="flex gap-1 items-center text-2xl sm:leading-5 sm:text-[15px] text-gray-400 hover:text-gray-500"
-              >
-                <InfoIcon />
-                About
-              </Link>
-            </li>
-            <li className="flex sm:mt-1 gap-1 max-sm:hidden">
-              <Link
-                href="/about"
-                prefetch={false}
-                className="flex gap-1 items-center text-2xl sm:leading-5 sm:text-[15px] text-gray-400 hover:text-gray-500"
-              >
-                <SocialIcon />
-                Socials
-              </Link>
-            </li>
-          </>
-        )}
-      </ul>
+        {/* === ADD HERE: Always render About/Social links === */}
+  <li className="sm:mt-10 flex gap-1">
+    <Link
+      href="/about"
+      prefetch={false}
+      className="flex gap-1 items-center text-2xl sm:leading-5 sm:text-[15px] text-gray-400 hover:text-gray-500"
+    >
+      <InfoIcon />
+      About
+    </Link>
+  </li>
+  <li className="flex sm:mt-1 gap-1 max-sm:hidden">
+    <Link
+      href="/about"
+      prefetch={false}
+      className="flex gap-1 items-center text-2xl sm:leading-5 sm:text-[15px] text-gray-400 hover:text-gray-500"
+    >
+      <SocialIcon />
+      Socials
+    </Link>
+  </li>
+</ul>
     </nav>
   );
 };
