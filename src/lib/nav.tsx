@@ -6,10 +6,13 @@ import { GlobeIcon, InfoIcon, SocialIcon } from './icons';
 
 // Map album titles to their static route paths
 const ALBUM_ROUTES: Record<string, string> = {
-  'China': '/china',
+  'Animes': '/animes',
+  'Animals': '/animals',
+  'Florida': '/florida',
   'Japan': '/japan',
   'Texas': '/texas',
-  'Zander': '/zander'
+  'China': '/china',
+  'UK': '/uk'
 };
 
 export const Nav: React.FC<{
@@ -30,6 +33,11 @@ export const Nav: React.FC<{
       <ul className="flex flex-col max-sm:items-center max-sm:mb-8 content-start tracking-tight">
         {albums.map(album => {
           const isActive = title.toLowerCase() === album.title.toLowerCase();
+
+          albums.forEach(album => {
+  console.log(`Album title in Nav: "${album.title}" -> Route:`, ALBUM_ROUTES[album.title]);
+});
+
           const albumRoute = ALBUM_ROUTES[album.title];
           
           if (!albumRoute) {

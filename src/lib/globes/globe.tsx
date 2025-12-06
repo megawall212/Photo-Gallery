@@ -46,7 +46,10 @@ const ALBUM_ROUTES: Record<string, string> = {
   'China': '/china',
   'Japan': '/japan',
   'Texas': '/texas',
-  'Zander': '/zander'
+  'Animals': '/animals',
+  'Florida': '/florida',
+  'Animes': '/animes',
+  'UK': '/uk'
 };
 
 function randomInRange(min: number, max: number): number {
@@ -358,6 +361,12 @@ function Globe({ albums }: { albums: Array<Album> }) {
     handleMouseLeave,
     activeAlbumTitle
   } = useRings(globeElRef as CustomGlobeMethods, setPointAltitude);
+
+    console.log('Albums received in Globe:', albums.map(a => a.title));
+  albums.forEach(album => {
+    console.log(`Album title: "${album.title}" -> Route:`, ALBUM_ROUTES[album.title]);
+  });
+
   const activeAlbum = albums.find(album => album.title === activeAlbumTitle);
 
   const { arcs } = useArcs(albums);

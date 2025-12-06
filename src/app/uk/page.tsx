@@ -1,5 +1,3 @@
-// src/app/Zander/page.tsx
-
 import dynamic from 'next/dynamic';
 import { getAlbums, getAlbumByTitle } from '@/lib/api';
 import Nav from '@/lib/nav';
@@ -9,16 +7,16 @@ const Masonry = dynamic(() => import('@/lib/images/masonry'), {
   ssr: false
 });
 
-async function ZanderPage() {  
+async function UKPage() {
   const albums = await getAlbums();
   
   let album, photos;
   try {
-    const result = await getAlbumByTitle('Zander');  
+    const result = await getAlbumByTitle('UK'); // <-- changed here
     album = result.album;
     photos = result.photos;
   } catch (error) {
-    console.error('Failed to fetch Zander album:', error); 
+    console.error('Failed to fetch UK album:', error); // <-- changed here
     return (
       <section className="flex flex-col sm:flex-row sm:my-20">
         <div className="pt-10 sm:pl-10 sm:pr-20 lg:pl-20 lg:pr-40 space-y-1">
@@ -62,4 +60,4 @@ async function ZanderPage() {
   );
 }
 
-export default ZanderPage;
+export default UKPage;
